@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Sign Up</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/signin.css" rel="stylesheet">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+
+  </head>
+
+  <body>
+    <div class="container">
+      <form method="post" class="form-signin">
+        <h2>Register</h2>
+        <table>
+
+          <tr>
+            <td>
+              <input type="text" name="username" value="{{username}}" class="form-control" placeholder="Username" required autofocus>
+            </td>
+            <td class="error">
+              {{error_username}}
+            </td>
+          </tr>
+
+          <tr>
+            
+            <td>
+              <input type="password" name="password" value="" class="form-control" placeholder="Password" required autofocus>
+            </td>
+            <td class="error">
+              {{error_password}}
+            </td>
+          </tr>
+
+          <tr>
+            
+            <td>
+              <input type="password" name="verify" value="" class="form-control" placeholder="Confirm Your Password" required autofocus>
+            </td>
+            <td class="error">
+              {{error_verify}}
+            </td>
+          </tr>
+
+          <tr>
+            
+            <td>
+              <input type="text" name="email" value="{{email}}" class="form-control" placeholder="Email address" autofocus>
+            </td>
+            <td class="error">
+              {{error_email}}
+            </td>
+          </tr>
+        </table>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+      </form>
+    </div>
+  </body>
+
+</html>
