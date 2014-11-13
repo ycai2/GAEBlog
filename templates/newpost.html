@@ -7,21 +7,23 @@
 
 {% block content %}
 
-  <h2>new post</h2>
+  <h2>New Post</h2>
 
-    <form method="post">
+    <form method="post" class="jumbotron">
       <label>
-        <div>subject</div>
-        <input type="text" name="subject" value="{{subject}}">
+        <div>Subject</div>
+        <input type="text" class="form-control" name="subject" value="{{subject}}">
       </label>
 
-      <label>
-        <div>blog</div>
-        <textarea name="content">{{content}}</textarea>
-      </label>
+      <div>
+        <b>Blog</b>
+        
+        </div>
+      <textarea class="form-control" name="content" rows="10" placeholder="(HTML formatting available)">{{content}}</textarea>
+      
 
       <div class="error">{{error}}</div>
-
-      <input type="submit">
+      <br><br>
+      <input type="submit" class="btn btn-primary">
     </form>
 {% endblock %}
