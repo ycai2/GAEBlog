@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
+{% block navbar %}
+  <li><a href="/blog">Home</a></li>
+  <li class="active"><a href="/blog/newpost">New Post</a></li>
+{% endblock %}
+
 {% block content %}
+
   <h2>new post</h2>
 
     <form method="post">

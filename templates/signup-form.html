@@ -19,51 +19,83 @@
   </head>
 
   <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/blog">Yisheng's Blog</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/blog">Home</a></li>
+            <li><a href="/blog/newpost">New Post</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+
+      </div>
+    </nav>
+
     <div class="container">
       <form method="post" class="form-signin">
         <h2>Register</h2>
-        <table>
-
-          <tr>
-            <td>
+        <div>
+          {% if error_username %}
+            <div id="form-error" class="form-group has-error has-feedback">
+              
               <input type="text" name="username" value="{{username}}" class="form-control" placeholder="Username" required autofocus>
-            </td>
-            <td class="error">
-              {{error_username}}
-            </td>
-          </tr>
-
-          <tr>
-            
-            <td>
+              <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+              <label class="control-label">Has to be at least 3 letters/numbers</label>
+            </div>
+          {% else %}
+            <div class="form-group">
+              <input type="text" name="username" value="{{username}}" class="form-control" placeholder="Username" required autofocus>
+            </div>
+          {% endif %}
+       
+          {% if error_password %}
+            <div id="form-error" class="form-group has-error has-feedback">
+              
               <input type="password" name="password" value="" class="form-control" placeholder="Password" required autofocus>
-            </td>
-            <td class="error">
-              {{error_password}}
-            </td>
-          </tr>
+              <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+              <label class="control-label">Has to be at least 3 letters/numbers</label>
+            </div>
+          {% else %}
+            <div class="form-group">
+              <input type="password" name="password" value="" class="form-control" placeholder="Password" required autofocus>
+            </div>
+          {% endif %}
+          
+          {% if error_verify %}
+            <div id="form-error" class="form-group has-error has-feedback">
+              
+              <input type="password" name="verify" value="" class="form-control" placeholder="Confirm Password" required autofocus>
+              <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+              <label class="control-label">Has to match password</label>
+            </div>
+          {% else %}
+            <div class="form-group">
+              <input type="password" name="verify" value="" class="form-control" placeholder="Confirm Password" required autofocus>
+            </div>
+          {% endif %}
 
-          <tr>
-            
-            <td>
-              <input type="password" name="verify" value="" class="form-control" placeholder="Confirm Your Password" required autofocus>
-            </td>
-            <td class="error">
-              {{error_verify}}
-            </td>
-          </tr>
-
-          <tr>
-            
-            <td>
-              <input type="text" name="email" value="{{email}}" class="form-control" placeholder="Email address" autofocus>
-            </td>
-            <td class="error">
-              {{error_email}}
-            </td>
-          </tr>
-        </table>
-
+          {% if error_email %}
+            <div id="form-error" class="form-group has-error has-feedback">
+              <input type="text" name="email" value="{{email}}" class="form-control" placeholder="Email (Optional)" autofocus>
+              <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+              <label class="control-label">Has to match password</label>
+            </div>
+          {% else %}
+            <div class="form-group">
+              <input type="text" name="email" value="{{email}}" class="form-control" placeholder="Email (Optional)" autofocus>
+            </div>
+          {% endif %}
+        </div>
+        <br>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
       </form>
     </div>
