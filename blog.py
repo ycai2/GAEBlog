@@ -16,18 +16,24 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
 
 secret = 'yisheng'
 
+#Global function to render html
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
+#hash a cookie value with HMac using public key 'secret'
+#return the cookie value piped with hashed value
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
+#takes an cookie responded by user browser
+#and checks to see if hashed values are matched
 def check_secure_val(secure_val):
     val = secure_val.split('|')[0]
     if secure_val == make_secure_val(val):
         return val
 
+# Main handler
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -39,40 +45,50 @@ class BlogHandler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+    #hash cookies
     def set_secure_cookie(self, name, val):
         cookie_val = make_secure_val(val)
         self.response.headers.add_header(
             'Set-Cookie',
             '%s=%s; Path=/' % (name, cookie_val))
 
+    #check cookies
     def read_secure_cookie(self, name):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
+    #set cookies to include user_id
     def login(self, user):
         self.set_secure_cookie('user_id', str(user.key().id()))
 
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 
+    #find user entry with a certain user id and assign it to a "user" objeact
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
+        
 
+#function takes an object post and renders the post
 def render_post(response, post):
     response.out.write('<b>' + post.subject + '</b><br>')
     response.out.write(post.content)
 
+#default function initialized when projet is created
 class MainPage(BlogHandler):
   def get(self):
       self.write('Hello, World!')
 
 
 ##### user stuff
+
+#generates a salt value
 def make_salt(length = 5):
     return ''.join(random.choice(letters) for x in xrange(length))
 
+#hash the password with sha256 hash function
 def make_pw_hash(name, pw, salt = None):
     if not salt:
         salt = make_salt()
@@ -82,6 +98,7 @@ def make_pw_hash(name, pw, salt = None):
 def valid_pw(name, password, h):
     salt = h.split(',')[0]
     return h == make_pw_hash(name, password, salt)
+
 
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
