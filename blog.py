@@ -281,12 +281,12 @@ class Welcome(BlogHandler):
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
-                               ('/blog/?', BlogFront),
-                               ('/blog/([0-9]+)', PostPage),
+                               ('/blog/?(?:.json)?', BlogFront),
+                               ('/blog/([0-9]+)(?:.json)?', PostPage),
                                ('/blog/newpost', NewPost),
                                ('/signup', Register),
                                ('/login', Login),
                                ('/logout', Logout),
-                               ('/welcome', Welcome),
+                               ('/welcome', Welcome)
                                ],
                               debug=True)
