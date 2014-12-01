@@ -267,6 +267,7 @@ class Login(BlogHandler):
             msg = 'Invalid login'
             self.render('login-form.html', error = msg)
 
+
 class Logout(BlogHandler):
     def get(self):
         self.logout()

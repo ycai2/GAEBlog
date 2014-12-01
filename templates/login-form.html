@@ -16,7 +16,7 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-
+    <script src="https://apis.google.com/js/client:platform.js" async defer></script>
   </head>
 
   <body>
@@ -34,7 +34,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="/blog">Home</a></li>
-            <li><a href="/blog/newpost">New Post</a></li>
+            <li class="active"><a href="/blog/newpost">New Post</a></li>
           </ul>
         </div><!--/.nav-collapse -->
 
@@ -67,8 +67,17 @@
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <a href="/signup">Don't have an account?</a>
+        <span id="signinButton">
+          <span
+            class="g-signin"
+            data-callback="signinCallback"
+            data-clientid="863521155924-7djolrbrhbgel5ag8so22p9rqugc4907.apps.googleusercontent.com"
+            data-cookiepolicy="http://ycai-blog.appspot.com"
+            data-requestvisibleactions="http://schema.org/AddAction"
+            data-scope="https://www.googleapis.com/auth/plus.login">
+          </span>
+        </span>
       </form>
     </div>
   </body>
-
 </html>
