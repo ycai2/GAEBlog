@@ -16,7 +16,30 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="https://apis.google.com/js/client:platform.js" async defer></script>
+    <!--<script src="https://apis.google.com/js/client:platform.js" async defer></script>
+    <script>
+      function signinCallback(authResult) {
+
+        if (authResult['status']['signed_in']) {
+          // Update the app to reflect a signed in user
+          // Hide the sign-in button now that the user is authorized, for example:
+          alert("hello." + authResult['id_token']);
+
+          document.getElementById('signinButton').setAttribute('style', 'display: none');
+          window.userId = "testid";
+          window.location = "http://ycai-blog.appspot.com/blog";
+
+        } else {
+          // Update the app to reflect a signed out user
+          // Possible error values:
+          //   "user_signed_out" - User is signed-out
+          //   "access_denied" - User denied access to your app
+          //   "immediate_failed" - Could not automatically log in the user
+          alert("failed.");
+          console.log('Sign-in state: ' + authResult['error']);
+        }
+      }
+    </script>-->
   </head>
 
   <body>
@@ -34,7 +57,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="/blog">Home</a></li>
-            <li class="active"><a href="/blog/newpost">New Post</a></li>
+            <li><a href="/blog/newpost">New Post</a></li>
           </ul>
         </div><!--/.nav-collapse -->
 
@@ -67,7 +90,7 @@
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <a href="/signup">Don't have an account?</a>
-        <span id="signinButton">
+        <!--<span id="signinButton">
           <span
             class="g-signin"
             data-callback="signinCallback"
@@ -76,7 +99,7 @@
             data-requestvisibleactions="http://schema.org/AddAction"
             data-scope="https://www.googleapis.com/auth/plus.login">
           </span>
-        </span>
+        </span>-->
       </form>
     </div>
   </body>
