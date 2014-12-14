@@ -22,28 +22,26 @@
   <hr>
 
   {% for i in comments %}
-    {% if i.parent_post==p.key().id() %}
-      <div class="post-heading">
-        <h2>
-          {{i.subject}}
-          
-        </h2>
-        Posted by
-        <div class="label label-warning">
-          {{i.author}}
+    <div class="post-heading">
+      <h2>
+        {{i.subject}}
+        
+      </h2>
+      Posted by
+      <div class="label label-warning">
+        {{i.author}}
+      </div>
+      <h4>
+        <div class="label label-info">
+          {{i.created.strftime("%H:%M:%S, %b %d, %Y")}}
         </div>
-        <h4>
-          <div class="label label-info">
-            {{i.created.strftime("%H:%M:%S, %b %d, %Y")}}
-          </div>
-        </h4>
-      </div>
-      <hr>
+      </h4>
+    </div>
+    <hr>
 
-      <div class="post-content">
-        {{i.content | safe}}
-      </div>
-    {% endif %}
+    <div class="post-content">
+      {{i.content | safe}}
+    </div>
   {% endfor %}
 
   <form method="post" class="jumbotron">
