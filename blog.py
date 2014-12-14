@@ -3,6 +3,9 @@ import re
 import random
 import hashlib
 import hmac
+import datetime
+import time
+from datetime import datetime, timedelta
 from string import letters
 
 import webapp2
@@ -69,12 +72,7 @@ class BlogHandler(webapp2.RequestHandler):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
-        
 
-#function takes an object post and renders the post
-def render_post(response, post):
-    response.out.write('<b>' + post.subject + '</b><br>')
-    response.out.write(post.content)
 
 #default function initialized when projet is created
 class MainPage(BlogHandler):
@@ -103,6 +101,8 @@ def valid_pw(name, password, h):
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
 
+
+#Object for User database
 class User(db.Model):
     name = db.StringProperty(required = True)
     pw_hash = db.StringProperty(required = True)
@@ -136,23 +136,51 @@ class User(db.Model):
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
 
+def comment_key(name = 'default'):
+    return db.Key.from_path('comments', name)
+
+#Object for Post database
 class Post(db.Model):
     subject = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
     author = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
+    #+datetime.timedelta(hours=8)
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
+    def render_page(self):
+        self._render_text = self.content.replace('\n', '<br>')
+        #print self.created.now()-datetime.timedelta(hours=5)
+        comments = Comment.all().filter('parent_post =', str(self.key().id())).order('-created')
+        return render_str("single-post.html", p = self, comments = comments)
+
+    
+
+#Front page
 class BlogFront(BlogHandler):
+
     def get(self):
         posts = greetings = Post.all().order('-created')
+
         self.render('front.html', posts = posts)
 
+#Object for Comment database
+class Comment(db.Model):
+    content = db.TextProperty(required = True)
+    author = db.StringProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    parent_post = db.StringProperty(required = True)
+
+
+
+
+
 class PostPage(BlogHandler):
+
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
@@ -160,8 +188,31 @@ class PostPage(BlogHandler):
         if not post:
             self.error(404)
             return
-
         self.render("permalink.html", post = post)
+
+    def post(self, post_id):
+        if not self.user:
+            self.redirect('/blog')
+
+        content = self.request.get('content').replace('\n', '<br>')
+
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        if content:
+            created = datetime.now() - timedelta(hours=5)
+            comment = Comment(parent = comment_key(), created = created, content = content, author = self.user.name, parent_post = post_id)
+            comment.put()
+
+        #else:
+        self.redirect('/blog/%s' % post_id)
+
+
+
 
 class NewPost(BlogHandler):
     def get(self):
@@ -183,6 +234,7 @@ class NewPost(BlogHandler):
             p = Post(parent = blog_key(), subject = subject, content = content, author = self.user.name)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
+        
         else:
             error = "subject and content, please!"
             self.render("newpost.html", subject=subject, content=content, error=error)
