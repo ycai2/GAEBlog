@@ -133,6 +133,9 @@ class User(db.Model):
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
 
+def comment_key(name = 'default'):
+    return db.Key.from_path('comments', name)
+
 #Object for Post database
 class Post(db.Model):
     subject = db.StringProperty(required = True)
@@ -180,6 +183,28 @@ class PostPage(BlogHandler):
             self.error(404)
             return
         self.render("permalink.html", post = post)
+
+    def post(self, post_id):
+        if not self.user:
+            self.redirect('/blog')
+
+        content = self.request.get('content')
+
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        if content:
+            comment = Comment(parent = comment_key(), content = content, author = self.user.name, parent_post = post_id)
+            comment.put()
+            self.redirect('/blog/%s' % post_id)
+        
+        # else:
+        #     error = "Content is empty!"
+        #     self.render("permalink.html", content=content, error=error)
 
 
 
