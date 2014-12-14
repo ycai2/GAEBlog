@@ -69,12 +69,7 @@ class BlogHandler(webapp2.RequestHandler):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
-        
 
-#function takes an object post and renders the post
-def render_post(response, post):
-    response.out.write('<b>' + post.subject + '</b><br>')
-    response.out.write(post.content)
 
 #default function initialized when projet is created
 class MainPage(BlogHandler):
@@ -103,6 +98,8 @@ def valid_pw(name, password, h):
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
 
+
+#Object for User database
 class User(db.Model):
     name = db.StringProperty(required = True)
     pw_hash = db.StringProperty(required = True)
@@ -136,6 +133,7 @@ class User(db.Model):
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
 
+#Object for Post database
 class Post(db.Model):
     subject = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
@@ -149,14 +147,27 @@ class Post(db.Model):
 
     def render_page(self):
         self._render_text = self.content.replace('\n', '<br>')
-        return render_str("single-post.html", p = self)
+        comments = Comment.all().order('-created')
+        return render_str("single-post.html", p = self, comments = comments)
 
+    
+
+#Front page
 class BlogFront(BlogHandler):
 
     def get(self):
         posts = greetings = Post.all().order('-created')
 
         self.render('front.html', posts = posts)
+
+#Object for Comment database
+class Comment(db.Model):
+    content = db.TextProperty(required = True)
+    author = db.StringProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    parent_post = db.StringProperty(required = True)
+
+
 
 
 
