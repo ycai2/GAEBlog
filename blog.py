@@ -148,9 +148,13 @@ class Post(db.Model):
         return render_str("post.html", p = self)
 
 class BlogFront(BlogHandler):
+
     def get(self):
         posts = greetings = Post.all().order('-created')
+
         self.render('front.html', posts = posts)
+
+
 
 class PostPage(BlogHandler):
     def get(self, post_id):
@@ -160,8 +164,10 @@ class PostPage(BlogHandler):
         if not post:
             self.error(404)
             return
-
         self.render("permalink.html", post = post)
+
+
+
 
 class NewPost(BlogHandler):
     def get(self):
@@ -183,6 +189,7 @@ class NewPost(BlogHandler):
             p = Post(parent = blog_key(), subject = subject, content = content, author = self.user.name)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
+        
         else:
             error = "subject and content, please!"
             self.render("newpost.html", subject=subject, content=content, error=error)
