@@ -4,8 +4,6 @@ import random
 import hashlib
 import hmac
 from string import letters
-from datetime import tzinfo, timedelta, datetime
-
 
 import webapp2
 import jinja2
@@ -153,9 +151,9 @@ class Post(db.Model):
     def render_page(self):
         self._render_text = self.content.replace('\n', '<br>')
         comments = Comment.all().filter('parent_post =', str(self.key().id())).order('-created')
-        #print comments
-        #for c in comments:
-         ##   print c.content
+        print comments
+        for c in comments:
+            print c.content
 
         return render_str("single-post.html", p = self, comments = comments)
 
@@ -171,21 +169,10 @@ class BlogFront(BlogHandler):
 
 #Object for Comment database
 class Comment(db.Model):
-    #this.tzinfo.utcoffset(d)
-    #datetime.timedelta(hours=-1)
-
-
-    #created     = db.DateTimeProperty(editable=False)
-    #created    = db.DateTimeProperty()
-
     content = db.TextProperty(required = True)
     author = db.StringProperty(required = True)
-    #created = db.DateTimeProperty(datetime.datetime.now())
     created = db.DateTimeProperty(auto_now_add = True)
     parent_post = db.StringProperty(required = True)
- 
-
- 
 
 
 
@@ -218,6 +205,13 @@ class PostPage(BlogHandler):
             comment = Comment(parent = comment_key(), content = content, author = self.user.name, parent_post = post_id)
             comment.put()
             self.redirect('/blog/%s' % post_id)
+        
+        # else:
+        #     error = "Content is empty!"
+        #     self.render("permalink.html", content=content, error=error)
+
+
+
 
 class NewPost(BlogHandler):
     def get(self):
