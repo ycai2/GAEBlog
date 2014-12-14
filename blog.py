@@ -3,6 +3,9 @@ import re
 import random
 import hashlib
 import hmac
+import datetime
+import time
+from datetime import datetime, timedelta
 from string import letters
 
 import webapp2
@@ -143,6 +146,7 @@ class Post(db.Model):
     author = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
+    #+datetime.timedelta(hours=8)
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -150,11 +154,8 @@ class Post(db.Model):
 
     def render_page(self):
         self._render_text = self.content.replace('\n', '<br>')
+        #print self.created.now()-datetime.timedelta(hours=5)
         comments = Comment.all().filter('parent_post =', str(self.key().id())).order('-created')
-        print comments
-        for c in comments:
-            print c.content
-
         return render_str("single-post.html", p = self, comments = comments)
 
     
@@ -179,6 +180,7 @@ class Comment(db.Model):
 
 
 class PostPage(BlogHandler):
+
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
@@ -192,7 +194,7 @@ class PostPage(BlogHandler):
         if not self.user:
             self.redirect('/blog')
 
-        content = self.request.get('content')
+        content = self.request.get('content').replace('\n', '<br>')
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
@@ -202,13 +204,12 @@ class PostPage(BlogHandler):
             return
 
         if content:
-            comment = Comment(parent = comment_key(), content = content, author = self.user.name, parent_post = post_id)
+            created = datetime.now() - timedelta(hours=5)
+            comment = Comment(parent = comment_key(), created = created, content = content, author = self.user.name, parent_post = post_id)
             comment.put()
-            self.redirect('/blog/%s' % post_id)
-        
-        # else:
-        #     error = "Content is empty!"
-        #     self.render("permalink.html", content=content, error=error)
+
+        #else:
+        self.redirect('/blog/%s' % post_id)
 
 
 
