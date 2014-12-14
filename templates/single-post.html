@@ -4,29 +4,26 @@
       {{p.subject}}
       
     </h2>
+    <h5>
     Posted by
     <div class="label label-warning">
-      {{p.author}}
-    </div>
-    <h4>
+      {{p.author}} </div>&nbsp;
+    
       <div class="label label-info">
         {{p.created.strftime("%b %d, %Y")}}
       </div>
-    </h4>
+    </h5>
   </div>
   <hr>
-
+<h4>
   <div class="post-content">
     {{p._render_text | safe}}
   </div>
+</h4>
   <hr>
 
   {% for i in comments %}
-    <div class="post-heading">
-      <h2>
-        {{i.subject}}
-        
-      </h2>
+  <!--  <div class="post-heading">    
       Posted by
       <div class="label label-warning">
         {{i.author}}
@@ -37,11 +34,28 @@
         </div>
       </h4>
     </div>
-    <hr>
+    
 
-    <div class="post-content">
+    <div class="alert alert-info">
       {{i.content | safe}}
     </div>
+
+  <div class="list-group">
+  <a href="#" class="list-group-item active">
+    <h4 class="list-group-item-heading">{{i.content | safe}}</h4>
+    <p class="list-group-item-text">{{i.author}}</p>
+  </a>-->
+
+ <div class="panel panel-default">
+  <div class="panel-heading"> {{i.author}} {{i.created.strftime("%H:%M:%S, %b %d, %Y")}}</div>
+  <div class="panel-body">
+     {{i.content | safe}}
+  </div>
+</div>
+ 
+
+
+
   {% endfor %}
 
   <form method="post" class="jumbotron">
@@ -49,7 +63,7 @@
       <b>Comment</b>
       
       </div>
-    <textarea class="form-control" name="content" rows="10" placeholder="(HTML formatting available)">{{content}}</textarea>
+    <textarea class="form-control" name="content" rows="7" placeholder="(HTML formatting available)">{{content}}</textarea>
     
 
     <div class="error">{{error}}</div>
