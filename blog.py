@@ -147,6 +147,10 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
+    def render_page(self):
+        self._render_text = self.content.replace('\n', '<br>')
+        return render_str("single-post.html", p = self)
+
 class BlogFront(BlogHandler):
 
     def get(self):

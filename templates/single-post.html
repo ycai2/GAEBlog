@@ -1,7 +1,7 @@
 <div class="post">
   <div class="post-heading">
     <h2>
-      <a href="/blog/{{p.key().id()}}">{{p.subject}}</a>
+      {{p.subject}}
       
     </h2>
     Posted by
@@ -19,6 +19,9 @@
   <div class="post-content">
     {{p._render_text | safe}}
   </div>
+  <hr>
+
+  
 
   
 </div>
