@@ -150,7 +150,11 @@ class Post(db.Model):
 
     def render_page(self):
         self._render_text = self.content.replace('\n', '<br>')
-        comments = Comment.all().order('-created')
+        comments = Comment.all().filter('parent_post =', str(self.key().id())).order('-created')
+        print comments
+        for c in comments:
+            print c.content
+
         return render_str("single-post.html", p = self, comments = comments)
 
     
