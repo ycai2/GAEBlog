@@ -152,11 +152,11 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
-    def render_page(self):
+    def render_page(self, user):
         self._render_text = self.content.replace('\n', '<br>')
         #print self.created.now()-datetime.timedelta(hours=5)
         comments = Comment.all().filter('parent_post =', str(self.key().id())).order('-created')
-        return render_str("single-post.html", p = self, comments = comments)
+        return render_str("single-post.html", p = self, comments = comments, user = user)
 
     
 
@@ -191,25 +191,26 @@ class PostPage(BlogHandler):
         self.render("permalink.html", post = post)
 
     def post(self, post_id):
-        if not self.user:
-            self.redirect('/blog')
+        
+        if self.user: 
+            content = self.request.get('content').replace('\n', '<br>')
 
-        content = self.request.get('content').replace('\n', '<br>')
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
 
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
+            if not post:
+                self.error(404)
+                return
 
-        if not post:
-            self.error(404)
-            return
+            if content:
+                created = datetime.now() - timedelta(hours=5)
+                comment = Comment(parent = comment_key(), created = created, content = content, author = self.user.name, parent_post = post_id)
+                comment.put()
 
-        if content:
-            created = datetime.now() - timedelta(hours=5)
-            comment = Comment(parent = comment_key(), created = created, content = content, author = self.user.name, parent_post = post_id)
-            comment.put()
-
-        #else:
-        self.redirect('/blog/%s' % post_id)
+            #else:
+            self.redirect('/blog/%s' % post_id)
+        else: 
+            self.redirect('/login')
 
 
 
